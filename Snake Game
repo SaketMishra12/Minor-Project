@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Snake Game with Score</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #111;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    #score {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: lime;
+    }
+
+    .game-area {
+      width: 400px;
+      height: 400px;
+      background-color: #222;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(20, 1fr);
+      grid-template-rows: repeat(20, 1fr);
+      gap: 1px;
+      border: 2px solid limegreen;
+    }
+
+    .cell {
+      width: 100%;
+      height: 100%;
+      background-color: #333;
+    }
+
+    .snake {
+      background-color: lime;
+    }
+
+    .food {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Snake Game</h1>
+  <p>Use arrow keys to control the snake.</p>
+  <div id="score">Score: 0</div>
+  <div class="game-area" id="gameArea"></div>
+
+  <script>
+    const gameArea = document.getElementById('gameArea');
+    const scoreDisplay = document.getElementById('score');
+    const gridSize = 20;
+    let snake = [42];
+    let direction = 1;
+    let food = Math.floor(Math.random() * gridSize * gridSize);
+    let intervalTime = 200;
+    let gameInterval;
+    let score = 0;
+
+    function drawGrid() {
+      gameArea.innerHTML = '';
+      for (let i = 0; i < gridSize * gridSize; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        if (snake.includes(i)) cell.classList.add('snake');
+        if (i === food) cell.classList.add('food');
+        gameArea.appendChild(cell);
+      }
+    }
+
+    function moveSnake() {
+      const head = snake[0] + direction;
+
+      if (
+        head < 0 || head >= gridSize * gridSize ||
+        (direction === 1 && head % gridSize === 0) ||
+        (direction === -1 && (head + 1) % gridSize === 0) ||
+        snake.includes(head)
+      ) {
+        clearInterval(gameInterval);
+        alert('Game Over!\nYour Score: ' + score);
+        return;
+      }
+
+      snake.unshift(head);
+
+      if (head === food) {
+        food = generateFood();
+        score++;
+        scoreDisplay.textContent = "Score: " + score;
+      } else {
+        snake.pop();
+      }
+
+      drawGrid();
+    }
+
+    function generateFood() {
+      let newFood;
+      do {
+        newFood = Math.floor(Math.random() * gridSize * gridSize);
+      } while (snake.includes(newFood));
+      return newFood;
+    }
+
+    function changeDirection(e) {
+      switch (e.key) {
+        case 'ArrowUp':
+          if (direction !== gridSize) direction = -gridSize;
+          break;
+        case 'ArrowDown':
+          if (direction !== -gridSize) direction = gridSize;
+          break;
+        case 'ArrowLeft':
+          if (direction !== 1) direction = -1;
+          break;
+        case 'ArrowRight':
+          if (direction !== -1) direction = 1;
+          break;
+      }
+    }
+
+    document.addEventListener('keydown', changeDirection);
+
+    drawGrid();
+    gameInterval = setInterval(moveSnake, intervalTime);
+  </script>
+</body>
+</html>
