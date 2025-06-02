@@ -1,0 +1,32 @@
+import pandas as pd
+
+# Load the CSV files
+matches = pd.read_csv("matches.csv")
+deliveries = pd.read_csv("deliveries.csv")
+
+# Display first few rows of each file
+print("Matches Data:")
+print(matches.head())
+
+print("\nDeliveries Data:")
+print(deliveries.head())
+
+
+# Check shape (rows and columns)
+print("Matches shape:", matches.shape)
+print("Deliveries shape:", deliveries.shape)
+
+# Check column names
+print("\nMatches Columns:", matches.columns.tolist())
+print("Deliveries Columns:", deliveries.columns.tolist())
+
+# Check for missing/null values
+print("\nMissing Values in Matches:\n", matches.isnull().sum())
+print("\nMissing Values in Deliveries:\n", deliveries.isnull().sum())
+
+# Basic stats
+print("\nMatches Description:\n", matches.describe())
+
+
+print(matches.duplicated().sum())
+print(deliveries.duplicated().sum())
